@@ -6,7 +6,7 @@ function Open-DialogBox {
 
     Param (
     [Parameter(Mandatory=$False)]
-    [string] $InitialDirectory
+    [string] $InitialDirectory #= [Environment]::GetFolderPath('Desktop')
     )
     
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
@@ -34,6 +34,19 @@ function Save-DialogBox {
     $SaveFileDialog.OverwritePrompt = $True;
     $SaveFileDialog.ShowDialog() | Out-Null
     return $SaveFileDialog.FileName
+}
+
+function Show-Toast {
+
+    $global:balloon = New-Object System.Windows.Forms.NotifyIcon
+    $path = (Get-Process -id $pid).Path
+    $balloon.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($path) 
+    $balloon.BalloonTipIcon = [System.Windows.Forms.ToolTipIcon]::Warning 
+    $balloon.BalloonTipText = "No file will be saved!"
+    $balloon.BalloonTipTitle = "Hallo $Env:USERNAME! File Error!" 
+    $balloon.Visible = $true 
+    $balloon.ShowBalloonTip(5000)
+
 }
 
 
@@ -137,7 +150,8 @@ $SaveFile = Save-DialogBox
 if($SaveFile -ne ""){
     Compare-Object $data1 $data2 -Property $compareproperty | Select-Object $outputobject | export-csv -Path $SaveFile -Delimiter ";" -NoTypeInformation
 } else {
-     [System.Windows.Forms.MessageBox]::Show("ATTENTION! $([System.Environment]::NewLine)No file will be saved!","File Error!",3,[System.Windows.Forms.MessageBoxIcon]::Exclamation)
+     #[System.Windows.Forms.MessageBox]::Show("ATTENTION! $([System.Environment]::NewLine)No file will be saved!","File Error!",3,[System.Windows.Forms.MessageBoxIcon]::Exclamation)
+     Show-Toast
 }
 
 #Compare-Object $data1 $data2 -Property $compareproperty | Select-Object $outputobject | export-csv $export -Delimiter ";" -NoTypeInformation
