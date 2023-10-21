@@ -53,13 +53,13 @@ function Show-Toast {
 #$file1 = Read-Host "full path to your first csv file (like C:\teams\team.csv)"
 #Write-Host -ForegroundColor Yellow $file1
 $file1 = Open-DialogBox
-$data1 = Import-Csv -Path $file1 -Delimiter ";" 
+$data1 = Import-Csv -Path $file1 -Delimiter ";" | Select-Object -First 1
 #$data1 | Format-Table
 
 #$file2 = Read-Host "full path to your second csv file (like C:\teams\team.csv)"
 #Write-Host -ForegroundColor Yellow $file2
 $file2 = Open-DialogBox
-$data2 = Import-Csv -Path $file2 -Delimiter ";" 
+$data2 = Import-Csv -Path $file2 -Delimiter ";" | Select-Object -First 1
 #$data2 | Format-Table
 
 #$export = Read-Host "where to export the new file (like C:\teams\team.csv)"
